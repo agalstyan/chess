@@ -1,2 +1,1 @@
-# chess
-Test task
+# Test task
