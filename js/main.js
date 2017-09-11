@@ -1,17 +1,16 @@
 $(function() {
-    var myBoard = new MyChessBoard('board');
-    $myBoard = $(myBoard),
+    var myBoard = new MyChessBoard('board'),
         $statusElement = $('#status'),
         $fenElement = $('#current-fen');
 
-    $myBoard.on('board-initialized', function(event, game, board){
+    myBoard.on('board-initialized', function(event, game, board){
         updateCurrentFen(game.fen(), $fenElement);
         updateStatus(game, $statusElement);
     });
 
     myBoard.init();
 
-    $myBoard.on('fen-loaded', function(event, game, board){
+    myBoard.on('fen-loaded', function(event, game, board){
         updateCurrentFen(game.fen(), $fenElement);
         updateStatus(game, $statusElement);
         updateCastlings(myBoard.getCastlings());
