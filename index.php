@@ -11,6 +11,7 @@
         </style>
 
         <script type="application/javascript" src="js/jquery-3.2.1.min.js"></script>
+        <script type="application/javascript" src="js/popper.min.js"></script>
         <script type="application/javascript" src="js/bootstrap.min.js"></script>
         <script type="application/javascript" src="js/chessboard-0.3.0.min.js"></script>
         <script type="application/javascript" src="js/chess.min.js"></script>
