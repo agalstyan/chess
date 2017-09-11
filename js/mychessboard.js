@@ -1,12 +1,9 @@
 var MyChessBoard = function(boardId){
     var board,
         game = new Chess(),
-        $this = $(this),
-        castlings = {"white": {"king": true,"queen": true}, "black": {"king": true,"queen": true}};
+        $board = $('#' + boardId),
+        castlings = {"white": {"king": true, "queen": true}, "black": {"king": true, "queen": true}};
 
-
-    // do not pick up pieces if the game is over
-    // only pick up pieces for the side to move
     var onDragStart = function(source, piece, position, orientation) {
         if (game.game_over() === true ||
             (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -14,7 +11,7 @@ var MyChessBoard = function(boardId){
             return false;
         }
 
-        $this.trigger('drag-started', [game, board]);
+        $board.trigger('drag-started', [game, board]);
     };
 
     var onDrop = function(source, target) {
@@ -26,16 +23,20 @@ var MyChessBoard = function(boardId){
         });
 
         // illegal move
-        if (move === null) return 'snapback';
+        if (move === null) {
+            $board.trigger('dropped', [game, board]);
 
-        $this.trigger('dropped', [game, board]);
+            return 'snapback';
+        }
+
+        $board.trigger('dropped', [game, board]);
     };
 
     // update the board position after the piece snap
     // for castling, en passant, pawn promotion
     var onSnapEnd = $.proxy(function() {
         this.loadFEN(game.fen());
-        $this.trigger('snap-end', [game, board]);
+        $board.trigger('snap-end', [game, board]);
     }, this);
 
     var stringContains = function (haystack, needle) {
@@ -52,7 +53,7 @@ var MyChessBoard = function(boardId){
         };
         board = ChessBoard(boardId, cfg);
 
-        $this.trigger('board-initialized', [game, board]);
+        $board.trigger('board-initialized', [game, board]);
     };
 
     this.loadFEN = function(fen) {
@@ -66,17 +67,22 @@ var MyChessBoard = function(boardId){
         var fenParts = fen.split(" ");
         var fenCastlings = fenParts[2];
 
+        // parse castlings
         castlings.white.king = stringContains(fenCastlings, 'K');
         castlings.white.queen = stringContains(fenCastlings, 'Q');
         castlings.black.king = stringContains(fenCastlings, 'k');
         castlings.black.queen = stringContains(fenCastlings, 'q');
 
-        $this.trigger('fen-loaded', [game, board]);
+        $board.trigger('fen-loaded', [game, board]);
 
         return true;
     };
 
     this.getCastlings = function() {
         return castlings;
+    };
+
+    this.on = function(event, callback) {
+        $board.on(event, callback);
     }
 };
